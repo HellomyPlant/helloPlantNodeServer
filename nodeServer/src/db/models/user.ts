@@ -1,7 +1,7 @@
 import { hashSync, compareSync, genSaltSync } from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import mongoose, { Document, model, Schema } from 'mongoose';
+import mongoose, { Document, model, Schema, Types } from 'mongoose';
 import mongooseUniqueValidator from 'mongoose-unique-validator';
 import validator from 'validator';
 
@@ -12,19 +12,18 @@ type ComparePasswordFunction = (candidatePassword: string) => Boolean;
 dotenv.config();
 
 export type User = {
-    // _id: string,
+    // _id: Types.ObjectId,
     email: string;
     password: string;
     nickname: string;
     admin: boolean;
     jsonWebToken: string;
     comparePassword: ComparePasswordFunction;
+    myPlantList: Types.ObjectId[];
 };
 export const userSchema = new Schema(
     {
-        // _id: {
-        //     type: String,
-        // },
+        // _id: Schema.Types.ObjectId,
         email: {
             type: String,
             required: [true, 'Email is required!'],
@@ -56,6 +55,9 @@ export const userSchema = new Schema(
         },
         jsonWebToken: String,
         admin: { type: Boolean, default: false },
+        myPlantList:{
+            type: [Schema.Types.ObjectId],default: [], ref: 'myPlant'
+        }
     },
     {
         timestamps: true,

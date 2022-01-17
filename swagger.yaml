@@ -1,0 +1,195 @@
+swagger: '2.0'
+
+info:
+  description: This is HelloPlant api document!
+  version: 1.0.0
+  title: HelloPlant api
+  # put the contact info for your development or API team
+  contact:
+    email: qwerq123456@snu.ac.kr
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: test
+  description: Methods for developer's test
+- name: users
+  description: method about user model
+
+paths:
+  /test:
+    get:
+      tags:
+      - test
+      summary: test for url
+      operationId: url test
+      description: |
+        you can test url with this method
+      responses:
+        200:
+          description: it just sends 200 
+
+  /user/signup:
+    post:
+      tags:
+      - users
+      summary: user signup
+      operationId : UserSignup
+      description: |
+        you can signup with email, password, nickname
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: email
+        description: email
+        type: string
+      - in: query
+        name: password
+        description: password
+        type: string  
+      - in: query
+        name: nickname
+        description: nickname
+        type: string
+
+      responses:
+        201:
+          description: signup success
+          schema:
+            type: object
+            properties: 
+              message:
+                type: string
+        409:
+          description: signup fail with vallidation error
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+              name:
+                type: string
+              _message: 
+                type: string
+              message:
+                type: string
+
+  /user/login:
+    get:
+      tags:
+      - users
+      summary: user login
+      operationId: UserLogin
+      description: |
+        you can login in with email, password
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: email
+        description: email
+        type: string
+      - in: query
+        name: password
+        description: password
+        type: string  
+      responses:
+        200:
+          description: login success
+          schema:
+            type: object
+            properties: 
+              message:
+                type: string
+              accessToken:
+                type: string
+                format: accessToken
+        400:
+          description: bad request because no email or password
+
+        401:
+          description: login fail because email and password not mached
+              
+  /user/test:
+    get:
+      tags:
+      - test
+      summary: test jwt token available
+      operationId: testJWT
+      description: |
+        By passing jwt in header with bearer token option, you can test jwt available
+      produces:
+      - application/json
+      responses:
+        200:
+          description: token available
+        401:
+          description: token not available
+
+definitions:
+  User:
+    type: object
+    required:
+    - id
+    - email
+    - password
+    - nickname
+    properties:
+      id:
+        type: string
+      email : 
+        type: string
+        example: qwerq123456@snu.ac.kr
+      password:
+        type: string
+      nickname : 
+        type: string
+        example: testnickname
+      myPlantList :
+        type: array
+        items:
+          $ref: '#definitions/myPlant'
+    description: |
+      user model
+  myPlant:
+    type: object
+    required: 
+    - image
+    - nickname
+    - scientific_name
+    - water_cycle
+    - fertilizer_cycle
+    properties: 
+      image:
+        type: string
+        format: base64
+      nickname: 
+        type: string
+      scientific_name: 
+        type: string
+      water_cycle:
+        type: object
+        properties: 
+          createdDate: 
+            type: string
+            format: date
+          cycle: 
+            type: integer
+      fertilizer_cycle:
+        type: object
+        properties: 
+          createdDate: 
+            type: string
+            format: date
+          cycle: 
+            type: integer
+    description:
+      my plant for user
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /18.116.203.236:1234
+schemes:
+ - https
