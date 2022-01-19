@@ -13,7 +13,6 @@ export const signUp = async (req: Request, res: Response) => {
     try {
         // const user1 = new User({email,password,nickname});
         const user = await User.create(req.body);
-        console.log(location);
         return res.status(201).json({message : `signup success with email : ${user.email}`});
     } catch (e) {
         console.log(`signup error with ${e}`);
