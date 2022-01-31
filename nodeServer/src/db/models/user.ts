@@ -6,24 +6,28 @@ import mongooseUniqueValidator from 'mongoose-unique-validator';
 import validator from 'validator';
 
 import { passwordReg } from '../../middlewares/validation';
+import { MyPlantDocument } from "./myplant";
 
 type ComparePasswordFunction = (candidatePassword: string) => Boolean;
 
 dotenv.config();
 
 export type User = {
-    // _id: Types.ObjectId,
+    userId: string;
     email: string;
     password: string;
     nickname: string;
     admin: boolean;
     jsonWebToken: string;
     comparePassword: ComparePasswordFunction;
-    myPlantList: Types.ObjectId[];
+    myPlantList: MyPlantDocument[];
 };
 export const userSchema = new Schema(
     {
-        // _id: Schema.Types.ObjectId,
+        userId: {
+            type: String,
+            // required: true,
+        },
         email: {
             type: String,
             required: [true, 'Email is required!'],
@@ -55,9 +59,12 @@ export const userSchema = new Schema(
         },
         jsonWebToken: String,
         admin: { type: Boolean, default: false },
-        myPlantList:{
-            type: [Schema.Types.ObjectId],default: [], ref: 'myPlant'
-        }
+        myPlantList:[
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'myPlant'
+            }
+        ]
     },
     {
         timestamps: true,
@@ -101,8 +108,8 @@ userSchema.methods.toJson = function () {
     };
 };
 
-interface UserBaseDocument extends User,Document {}
+interface UserBaseDocument extends User, Document {}
 
 export interface UserDocument extends UserBaseDocument {}
 
-export default mongoose.model<UserDocument>('User', userSchema);
+export const UserModel = mongoose.model<UserDocument>('User', userSchema);

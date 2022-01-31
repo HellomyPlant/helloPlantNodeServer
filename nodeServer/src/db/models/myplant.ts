@@ -4,8 +4,8 @@ export type MyPlant = {
     image: string;
     nickname: string;
     scientific_name: string;
-    water_cycle: Object;
-    fertilizer_cycle: number;
+    water_cycle: string;
+    fertilizer_cycle: string;
 }
 export const myPlantSchema = new Schema(
     {
@@ -22,7 +22,7 @@ export const myPlantSchema = new Schema(
             required: [true, 'scientific name is required!'],
         },
         water_cycle: {
-            type: Object,
+            type: String,
             required:[true, 'water cycle is required!'],
         },
         fertilizer_cycle:{
@@ -37,4 +37,4 @@ interface MyPlantBaseDocument extends MyPlant,Document{}
 
 export interface MyPlantDocument extends MyPlantBaseDocument {}
 
-export default mongoose.model<MyPlantDocument>('MyPlant', myPlantSchema);
+export const myPlantModel = mongoose.model<MyPlantDocument>('MyPlant', myPlantSchema);

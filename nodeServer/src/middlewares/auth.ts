@@ -4,7 +4,7 @@ import {
     ExtractJwt,
 } from 'passport-jwt';
 import passportLocal from 'passport-local';
-import User from "../db/models/user";
+import {UserModel} from "../db";
 
 
 const localOpts = {
@@ -20,7 +20,7 @@ const LocalStrategy = passportLocal.Strategy;
 
 const localStrategy = new LocalStrategy(localOpts, async (email, password, done) => {
     try {
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             email,
         });
         if (!user) {
@@ -37,7 +37,8 @@ const localStrategy = new LocalStrategy(localOpts, async (email, password, done)
 const jwtStrategy = new JWTStrategy(jwtOpts, async (payload,done) => {
     console.log(payload);
     try{
-        const user = await User.findOne({email : payload.email});
+        const user = await UserModel.findOne({email : payload.email});
+        // console.log(user?._id);
         if(!user) {
             return done(null, false);
         }
