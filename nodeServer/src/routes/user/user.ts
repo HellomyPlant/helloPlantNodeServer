@@ -5,6 +5,6 @@ import { validate } from 'express-validation';
 import { authLocal, authJwt } from '../../middlewares/auth';
 const router = express.Router();
 router.post('/signup', userControllers.signUp);
-router.get('/login', authLocal, userControllers.login);
+router.post('/login', authLocal, userControllers.login);
 router.get('/test',authJwt,userControllers.testJWT);
 export default router;
