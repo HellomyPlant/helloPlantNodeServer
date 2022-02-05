@@ -7,17 +7,15 @@ info:
   # put the contact info for your development or API team
   contact:
     email: qwerq123456@snu.ac.kr
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-
+  
 # tags are used for organizing operations
 tags:
-- name: test
-  description: Methods for developer's test
 - name: users
   description: method about user model
-
+- name: myPlant
+  description: method about myplant model
+- name: test
+  description: Methods for developer's test
 paths:
   /test:
     get:
@@ -42,18 +40,24 @@ paths:
       produces:
       - application/json
       parameters:
-      - in: query
-        name: email
-        description: email
-        type: string
-      - in: query
-        name: password
-        description: password
-        type: string  
-      - in: query
-        name: nickname
-        description: nickname
-        type: string
+      - in: body
+        name: body
+        description: signup data
+        schema:
+          type: object
+          required:
+            - email
+            - password
+            - nickname
+          properties:
+            email: 
+              type: string
+              format: email
+            password: 
+              type: string
+              format: password
+            nickname:
+              type: string
 
       responses:
         201:
@@ -63,22 +67,18 @@ paths:
             properties: 
               message:
                 type: string
+                example: "signup success with email: ${user.email}"
         409:
           description: signup fail with vallidation error
           schema:
             type: object
             properties:
-              errors:
-                type: object
-              name:
+              error:
                 type: string
-              _message: 
-                type: string
-              message:
-                type: string
+                example: "signup error with ${errormessage}"
 
   /user/login:
-    get:
+    post:
       tags:
       - users
       summary: user login
@@ -88,14 +88,22 @@ paths:
       produces:
       - application/json
       parameters:
-      - in: query
-        name: email
-        description: email
-        type: string
-      - in: query
-        name: password
-        description: password
-        type: string  
+      - in: body
+        name: body
+        description: login data
+        schema:
+          type: object
+          required:
+            - email
+            - password
+          properties:
+            email: 
+              type: string
+              format: email
+            password: 
+              type: string
+              format: password
+
       responses:
         200:
           description: login success
@@ -104,6 +112,7 @@ paths:
             properties: 
               message:
                 type: string
+                example: "login success"
               accessToken:
                 type: string
                 format: accessToken
@@ -129,6 +138,202 @@ paths:
         401:
           description: token not available
 
+  /myplant:
+    post:
+      tags:
+      - myPlant
+      summary: add myplant
+      operationId: appMyPlant
+      description: 
+        You can add myplant with myplant data
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: email
+        type: string
+        format: email
+        required: true
+      - in: body
+        name: body
+        description: add myplant data
+        schema:
+          type: object
+          required:
+            - scientific_name
+            - water_cycle
+            - fertilizer_cycle
+            - nickname
+            - image
+          properties:
+            scientific_name:
+              type: string
+            water_cycle:
+              type: string
+            fertilizer_cycle:
+              type: string
+            nickname:
+              type: string
+            image:
+              type: string
+              format: base64
+      responses:
+        201:
+          description: add myplant success
+          schema:
+            type: object
+            properties: 
+              newPlant:
+                type: object
+                $ref: '#definitions/myPlant'
+                properties: 
+                  image:
+                    type: string
+                    format: base64
+                  nickname: 
+                    type: string
+                  scientific_name: 
+                    type: string
+                  water_cycle:
+                    type: string
+                  fertilizer_cycle:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date
+                  updatedAt:
+                    type: string
+                    format: date
+        400:
+          description: add myplant fail
+          schema:
+            type: object
+            properties: 
+              errormessage:
+                type: string
+    
+    delete:
+      tags:
+      - myPlant
+      summary: delete myplant
+      operationId: deleteMyPlant
+      description: 
+        You can delete myplant with plantId
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: deleteMyPlant
+        description: delete myplant data
+        schema:
+          type: object
+          required:
+            - plantId
+            - email
+          properties:
+            plantId:
+              type: string
+            email:
+              type: string
+              format: email
+      responses:
+        204:
+          description: delete success
+        400:
+          description: no plant to delete
+          schema:
+            type: object
+            properties: 
+              message: 
+                type: string
+                example: "no plant"
+        403:
+          description: delete myplant fail
+          schema:
+            type: object
+            properties:
+              errormessage: 
+                type: string
+            
+    put:
+      tags:
+      - myPlant
+      summary: edit myplant
+      operationId: editMyPlant
+      description: 
+        You can edit myplant with plant data
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: plantId
+        type: string
+        required: true
+      - in: body
+        name: body
+        description: edit myplant data
+        schema:
+          type: object
+          properties:
+            water_cycle:
+              type: string
+            fertilizer_cycle:
+              type: string
+            nickname:
+              type: string
+
+      responses:
+        204:
+          description: success
+        400:
+          description: no plant to delete
+          schema:
+            type: object
+            properties: 
+              message: 
+                type: string
+        403:
+          description: delete myplant fail
+          schema:
+            type: object
+            properties:
+              errormessage: 
+                type: string
+
+  /myplant/list:
+    get:
+      tags:
+      - myPlant
+      summary: get myplant list with user email
+      operationId: myPlantList
+      description: |
+        you can get myplant list with user email
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: email
+        type: string
+        required: true
+        format: email
+
+      responses:
+        200:
+          description: get list success
+          schema:
+            type: object
+            properties: 
+              plants:
+                type: array
+                items:
+                  $ref: '#definitions/myPlant'
+                  
+        400:
+          description: bad request because can't find user with email
+
+        403:
+          description: get list fail
+              
 definitions:
   User:
     type: object
@@ -142,7 +347,7 @@ definitions:
         type: string
       email : 
         type: string
-        example: qwerq123456@snu.ac.kr
+        format: email
       password:
         type: string
       nickname : 
@@ -152,8 +357,15 @@ definitions:
         type: array
         items:
           $ref: '#definitions/myPlant'
-    description: |
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+    description: 
       user model
+
   myPlant:
     type: object
     required: 
@@ -171,25 +383,18 @@ definitions:
       scientific_name: 
         type: string
       water_cycle:
-        type: object
-        properties: 
-          createdDate: 
-            type: string
-            format: date
-          cycle: 
-            type: integer
+        type: string
       fertilizer_cycle:
-        type: object
-        properties: 
-          createdDate: 
-            type: string
-            format: date
-          cycle: 
-            type: integer
+        type: string
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
     description:
       my plant for user
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
+
 basePath: /18.116.203.236:1234
 schemes:
  - https
