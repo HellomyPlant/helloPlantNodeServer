@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import {UserModel} from "../db";
 import {myPlantModel} from "../db";
-import User from "../routes/user/user";
 
 export const addMyPlant = async (req:Request, res: Response) => {
     try{
@@ -15,18 +13,17 @@ export const addMyPlant = async (req:Request, res: Response) => {
         });
         myPlant.save();
         const user = await UserModel.findOneAndUpdate(
-            {email : req.body.email},
+            {email : req.query.email},
             { $addToSet: { myPlantList: myPlant  } },
             {new : true}
         );
         return res.status(201).json({
-            user: user,
             newPlant : myPlant
         });
     }
     catch (e) {
         console.log("error : " + e);
-        return res.status(403).json({errormessage : `${e}`});
+        return res.status(400).json({errormessage : `${e}`});
     }
 }
 
@@ -34,7 +31,7 @@ export const deleteMyPlant = async (req:Request, res: Response) => {
     try{
         const myPlant = await myPlantModel.findOneAndDelete({_id:req.body.plantId});
         if(!myPlant){
-            return res.status(200).json({
+            return res.status(400).json({
                 message: `no plant`
             })
         }
@@ -44,10 +41,7 @@ export const deleteMyPlant = async (req:Request, res: Response) => {
             },
             {new: true}
         )
-        return res.status(200).json({
-            user:user,
-            deletedPlant: myPlant
-        })
+        return res.status(204).send();
     }
     catch (e) {
         console.log("error : " + e);
@@ -63,7 +57,7 @@ export const editMyPlant = async (req: Request, res: Response) => {
             {new: true}
             );
         if(!myPlant){
-            return res.status(200).json({
+            return res.status(400).json({
                 message: `no plant`
             })
         }
@@ -79,7 +73,7 @@ export const editMyPlant = async (req: Request, res: Response) => {
 
 export const myPlantList = async (req: Request, res: Response) => {
     try{
-         const user = await UserModel.findOne({email: req.body.email}).lean();
+         const user = await UserModel.findOne({email: req.query.email}).lean();
          let plantList = new Array();
          let plantData = {
              scientific_name : "",
@@ -88,18 +82,21 @@ export const myPlantList = async (req: Request, res: Response) => {
              nickname: "",
              image : ""
          }
-         if(user){
-             for (const plantId of user.myPlantList) {
-                 const myPlant = await myPlantModel.findOne({_id : plantId}).lean();
-                 if(myPlant){
-                     plantData.scientific_name = myPlant.scientific_name;
-                     plantData.water_cycle = myPlant.water_cycle;
-                     plantData.fertilizer_cycle = myPlant.fertilizer_cycle;
-                     plantData.nickname = myPlant.nickname;
-                     plantData.image = myPlant.image;
-                     console.log( `plantData : ${plantData}`);
-                     plantList.push({myPlant});
-                 }
+         if(!user) {
+             return res.status(400).json(
+                 {message : "no user"}
+             )
+         }
+         for (const plantId of user.myPlantList) {
+             const myPlant = await myPlantModel.findOne({_id : plantId}).lean();
+             if(myPlant){
+                 plantData.scientific_name = myPlant.scientific_name;
+                 plantData.water_cycle = myPlant.water_cycle;
+                 plantData.fertilizer_cycle = myPlant.fertilizer_cycle;
+                 plantData.nickname = myPlant.nickname;
+                 plantData.image = myPlant.image;
+                 console.log( `plantData : ${plantData}`);
+                 plantList.push({myPlant});
              }
          }
          console.log(`my plant list : ${plantList}`);

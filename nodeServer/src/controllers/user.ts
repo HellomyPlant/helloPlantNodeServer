@@ -30,7 +30,9 @@ export const signUp = async (req: Request, res: Response) => {
         );
     } catch (e) {
         console.log(`signup error with ${e}`);
-        return res.status(409).json(e);
+        return res.status(409).json({
+            error: `${e}`
+        });
     }
 };
 
