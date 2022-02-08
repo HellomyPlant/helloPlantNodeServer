@@ -6,10 +6,16 @@ import passport from 'passport';
 import compression from 'compression';
 import router from './routes/index';
 import './db';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 dotenv.config();
 
 const app = express();
+
+const swaggerSpec = YAML.load(path.join(__dirname, '../build/swagger.yaml'))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 
 app.use(session({
