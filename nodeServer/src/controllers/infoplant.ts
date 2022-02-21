@@ -1,0 +1,191 @@
+import { Request, Response } from 'express';
+import {infoPlantModel} from "../db";
+import {plantModel} from "../db";
+
+export const addInfoPlant = async (req:Request, res: Response) => {
+    try{
+        const plant = await plantModel.findOne({scientific_name : req.body.scientific_name});
+        if(plant){
+            return res.status(405).json({
+                message: `already plant data exists`,
+                plant: plant
+            })
+        }
+        const default_necessary: string[] = ["family_name","water_cycle", "height", "place", "smell", "growth_speed","proper_temperature", "pest", "manage_level", "light"];
+        const not_necessary: string[] = [];
+        let data: any = {}
+        data.scientific_name = req.body.scientific_name;
+        if(req.body.family_name!=undefined) {
+            data.family_name = req.body.family_name;
+            not_necessary.push("family_name");
+        }
+        if(req.body.water_cycle !== undefined) {
+            data.water_cycle = req.body.water_cycle;
+            not_necessary.push("water_cycle");
+        }
+        if(req.body.height !== undefined) {
+            data.height = req.body.height;
+            not_necessary.push("height");
+        }
+        if(req.body.place !== undefined) {
+            data.place = req.body.place;
+            not_necessary.push("place");
+        }
+        if(req.body.smell !== undefined) {
+            data.smell = req.body.smell;
+            not_necessary.push("smell");
+        }
+        if(req.body.growth_speed !== undefined) {
+            data.growth_speed = req.body.growth_speed;
+            not_necessary.push("growth_speed");
+        }
+        if(req.body.proper_temperature !== undefined) {
+            data.proper_temperature = req.body.proper_temperature;
+            not_necessary.push("proper_temperature");
+        }
+        if(req.body.pest !== undefined) {
+            data.pest = req.body.pest;
+            not_necessary.push("pest");
+        }
+        if(req.body.manage_level !== undefined) {
+            data.manage_level = req.body.manage_level;
+            not_necessary.push("manage_level");
+        }
+        if(req.body.light !== undefined) {
+            data.light = req.body.light;
+            not_necessary.push("light");
+        }
+        const necessary = default_necessary.filter(x => !not_necessary.includes(x));
+        if(necessary.length===0){
+            const newPlant = await new plantModel(data);
+            await newPlant.save();
+            return res.status(201).json({
+                message: "plant data added!",
+                plant: newPlant
+            })
+        }
+        data.image = req.body.image;
+        data.necessary = necessary;
+        console.log(data);
+        console.log(`necessary : \n ${necessary}`);
+        const newInfoPlant = await new infoPlantModel(data);
+        await newInfoPlant.save();
+        return res.status(200).json({
+            message: "info plant data added!",
+            infoPlant : newInfoPlant
+        })
+    }
+    catch (e) {
+        console.log(`add infoplant error with ${e}`);
+        return res.status(403).json({
+            errormessage: `${e}`
+        })
+    }
+}
+
+export const editInfoPlant = async (req:Request, res: Response) => {
+    try{
+        let infoPlant = await infoPlantModel.findOne({scientific_name: req.body.scientific_name}).lean();
+        if(!infoPlant) {
+            return res.status(400).json({
+                message: 'no infoPlant'
+            });
+        }
+        else{
+            let necessary = infoPlant.necessary;
+            const not_necessary: string[] = [];
+            if(req.body.family_name!=undefined) {
+                infoPlant.family_name = req.body.family_name;
+                not_necessary.push("family_name");
+            }
+            if(req.body.water_cycle !== undefined) {
+                infoPlant.water_cycle = req.body.water_cycle;
+                not_necessary.push("water_cycle");
+            }
+            if(req.body.height !== undefined) {
+                infoPlant.height = req.body.height;
+                not_necessary.push("height");
+            }
+            if(req.body.place !== undefined) {
+                infoPlant.place = req.body.place;
+                not_necessary.push("place");
+            }
+            if(req.body.smell !== undefined) {
+                infoPlant.smell = req.body.smell;
+                not_necessary.push("smell");
+            }
+            if(req.body.growth_speed !== undefined) {
+                infoPlant.growth_speed = req.body.growth_speed;
+                not_necessary.push("growth_speed");
+            }
+            if(req.body.proper_temperature !== undefined) {
+                infoPlant.proper_temperature = req.body.proper_temperature;
+                not_necessary.push("proper_temperature");
+            }
+            if(req.body.pest !== undefined) {
+                infoPlant.pest = req.body.pest;
+                not_necessary.push("pest");
+            }
+            if(req.body.manage_level !== undefined) {
+                infoPlant.manage_level = req.body.manage_level;
+                not_necessary.push("manage_level");
+            }
+            if(req.body.light !== undefined) {
+                infoPlant.light = req.body.light;
+                not_necessary.push("light");
+            }
+            const filtered = necessary.filter(x => !not_necessary.includes(x));
+            infoPlant.necessary = filtered;
+            if(filtered.length===0){
+                const newPlant = await new plantModel(infoPlant);
+                await newPlant.save();
+                await infoPlantModel.findOneAndDelete({scientific_name:req.body.scientific_name});
+                return res.status(201).json({
+                    message: "plant data added and infoPlant deleted!",
+                    plant: newPlant
+                });
+            }
+            else{
+                const editedPlant = await infoPlantModel.findOneAndUpdate(
+                    {scientific_name: req.body.scientific_name},
+                    infoPlant,
+                    {new: true}
+                );
+                return res.status(200).json({
+                    message: "info plant data edited",
+                    infoPlant: editedPlant,
+                });
+            }
+        }
+    }
+    catch (e) {
+        console.log(`edit info plant fail with error ${e}`);
+        return res.status(403).json({errormessage : `edit info plant fail with error : ${e}`});
+    }
+}
+
+export const infoPlantList = async (req: Request, res: Response) => {
+    try{
+        const page = parseInt(<string>req.query.page);
+        const infoPlant = await infoPlantModel.find({}, null, {sort:{"updated_at":-1}});
+        const infoPlantList = [];
+        for(let i = 0; i<9; i++){
+            if(infoPlant[i+9*page-9]){
+                infoPlantList.push(infoPlant[i+9*page-9]);
+            }
+            else{
+                break;
+            }
+        }
+        return res.status(201).json({
+            message: `infoplant list for page : ${page}`,
+            infoPlantList : infoPlantList
+        });
+    }
+    catch(e) {
+        res.status(403).json({
+            message : `get infoPlantList error with ${e}`,
+        })
+    }
+}
+

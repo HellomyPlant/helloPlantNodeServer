@@ -19,7 +19,7 @@ export const addTestPlant = async (req:Request, res: Response) => {
     }
     catch (e) {
         console.log("error : " + e);
-        return res.status(400).json({errormessage : `${e}`});
+        return res.status(403).json({errormessage : `${e}`});
     }
 }
 

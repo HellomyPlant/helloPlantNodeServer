@@ -30,19 +30,18 @@ export const signUp = async (req: Request, res: Response) => {
         );
     } catch (e) {
         console.log(`signup error with ${e}`);
-        return res.status(409).json({
-            error: `${e}`
+        return res.status(403).json({
+            errormessage: `${e}`
         });
     }
 };
 
-export const login = async (req: Request, res: Response, next: Function) => {
+export const login = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
         {email:req.body.email},
         "OVWdXG1Sz7",
         {expiresIn: "30d"});
-    res.status(200).json({message: 'login success', accessToken});
-    return next();
+    return res.status(200).json({message: 'login success', accessToken});
 };
 
 export const testJWT = async (req: Request, res: Response) => {
@@ -58,7 +57,7 @@ export const testJWT = async (req: Request, res: Response) => {
     // // console.log(list);
     catch (e) {
         console.log(`test error with ${e}`)
-        res.status(409).json(e);
+        return res.status(403).json(e);
     }
     // return res.status(200).json({user:user});
     // return res.status(200).json({messsage:`token test success!`});

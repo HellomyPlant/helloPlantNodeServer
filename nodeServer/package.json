@@ -29,7 +29,6 @@
     "build": "tsc -p .",
     "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/app.ts",
     "api-docs": "swagger-cli bundle ./src/swagger/openapi.yaml --outfile build/swagger.yaml --type yaml",
-    "predev": "npm run api-docs",
     "prestart": "npm run api-docs"
   },
   "dependencies": {
@@ -47,6 +46,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pm2": "^5.1.2",
     "swagger-cli": "^4.0.4",
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0",

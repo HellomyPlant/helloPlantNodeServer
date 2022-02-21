@@ -13,12 +13,17 @@ schemes:
 
 # tags are used for organizing operations
 tags:
-- name: users
-  description: method about user model
+- name: user
+  description: Methods about user model
 - name: myPlant
-  description: method about myplant model
+  description: Methods about myplant model
 - name: test
   description: Methods for developer's test
+- name: plant
+  description: Methods about plant model
+- name: infoPlant
+  description: Methods about infoPlant model
+
 paths:
   /test:
     get:
@@ -35,7 +40,7 @@ paths:
   /user/signup:
     post:
       tags:
-      - users
+      - user
       summary: user signup
       operationId : UserSignup
       description: |
@@ -76,14 +81,14 @@ paths:
           schema:
             type: object
             properties:
-              error:
+              errormessage:
                 type: string
                 example: "signup error with ${errormessage}"
 
   /user/login:
     post:
       tags:
-      - users
+      - user
       summary: user login
       operationId: UserLogin
       description: |
@@ -336,7 +341,221 @@ paths:
 
         403:
           description: get list fail
-              
+
+  /infoplant:
+    post:
+      tags:
+      - infoPlant
+      summary: add infoplant
+      operationId: addInfoPlant
+      description: |
+        you can add infoplant with not complete data or add plant with complete data
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: addInfoPlant
+        description: add infoplant data
+        schema:
+          type: object
+          required:
+            - image
+            - scientific_name
+          properties:
+            image:
+              type: string
+              format: base64
+            scientific_name:
+              type: string
+            family_name:
+              type: string
+            water_cycle:
+              type: string
+            height: 
+              type: string
+            place:
+              type: string
+            smell:
+              type: string
+            growth_speed:
+              type: string
+            proper_temperature:
+              type: string
+            pest:
+              type: string
+            manage_level:
+              type: string
+            light:
+              type: string
+
+      responses:
+        200:
+          description: add infoplant success
+          schema:
+            type: object
+            properties: 
+              message : 
+                type: string
+                example: "info plant data added!"
+              infoPlant:
+                type: object
+                $ref: '#definitions/infoPlant'
+                  
+        201:
+          description: add plant success
+          schema:
+            type: object
+            properties: 
+              message : 
+                type: string
+                example: "plant data added!"
+              infoPlant:
+                type: object
+                $ref: '#definitions/plant'
+        
+        403: 
+          description: add infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage: 
+                type: string
+                  
+        405:
+          description: already plant data in database
+          schema:
+            type: object
+            properties: 
+              message: 
+                type: string
+                example: "already plant data exists"
+              plant: 
+                type: object
+                $ref: '#definitions/plant'
+
+    put:
+      tags:
+      - infoPlant
+      summary: edit infoplant
+      operationId: editInfoPlant
+      description: |
+        you can edit infoplant with not complete data or add plant with complete data
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: editInfoPlant
+        description: edit infoplant data
+        schema:
+          type: object
+          required:
+            - scientific_name
+          properties:
+            image:
+              type: string
+              format: base64
+            scientific_name:
+              type: string
+            family_name:
+              type: string
+            water_cycle:
+              type: string
+            height: 
+              type: string
+            place:
+              type: string
+            smell:
+              type: string
+            growth_speed:
+              type: string
+            proper_temperature:
+              type: string
+            pest:
+              type: string
+            manage_level:
+              type: string
+            light:
+              type: string
+
+      responses:
+        200:
+          description: edit infoplant success
+          schema:
+            type: object
+            properties: 
+              message : 
+                type: string
+                example: "info plant data edited!"
+              infoPlant:
+                type: object
+                $ref: '#definitions/infoPlant'
+                  
+        201:
+          description: add plant success
+          schema:
+            type: object
+            properties: 
+              message : 
+                type: string
+                example: "plant data added and infoPlant deleted!"
+              infoPlant:
+                type: object
+                $ref: '#definitions/plant'
+        400:
+          description: no infoplant data in database
+          schema:
+            type: object
+            properties: 
+              message: 
+                type: string
+                example: "no infoplant"
+
+        403: 
+          description: add infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage: 
+                type: string
+    
+  /infoplant/list:
+    get:
+      tags:
+      - infoPlant
+      summary: get infoplant list
+      operationId: infoPlantlist
+      description: |
+        you can get infoplant list that sorted with created date
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: page
+        type: string
+        required: true
+      
+      responses:
+        201:
+          description: infoplant list that sorted with created date
+          schema:
+            type: object
+            properties: 
+              message : 
+                type: string
+                example: "infoplant list for page : ${page}"
+              infoPlantList:
+                type: array
+                items:
+                  $ref: '#definitions/infoPlant'
+        
+        403: 
+          description: get infoplantlist fail
+          schema:
+            type: object
+            properties:
+              errormessage: 
+                type: string
+
 definitions:
   User:
     type: object
@@ -397,3 +616,74 @@ definitions:
         format: date
     description:
       my plant for user
+
+  plant:
+    type: object
+    properties:
+      scientific_name:
+        type: string
+      family_name:
+        type: string
+      water_cycle:
+        type: string
+      height: 
+        type: string
+      place:
+        type: string
+      smell:
+        type: string
+      growth_speed:
+        type: string
+      proper_temperature:
+        type: string
+      pest:
+        type: string
+      manage_level:
+        type: string
+      light:
+        type: string
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+    description: 
+      all plant infomations
+
+  infoPlant:
+    type: object
+    properties:
+      image:
+        type: string
+        format: base64
+      scientific_name:
+        type: string
+      family_name:
+        type: string
+      water_cycle:
+        type: string
+      height: 
+        type: string
+      place:
+        type: string
+      smell:
+        type: string
+      growth_speed:
+        type: string
+      proper_temperature:
+        type: string
+      pest:
+        type: string
+      manage_level:
+        type: string
+      light:
+        type: string
+      necessary:
+        type: array
+      createdAt:
+        type: string
+        format: date
+      updated_at:
+        type: string
+        format: date
