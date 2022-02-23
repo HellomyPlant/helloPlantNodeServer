@@ -173,6 +173,7 @@ paths:
             - fertilizer_cycle
             - nickname
             - image
+            - light
           properties:
             scientific_name:
               type: string
@@ -185,6 +186,9 @@ paths:
             image:
               type: string
               format: base64
+            light:
+              type: string
+
       responses:
         201:
           description: add myplant success
@@ -194,24 +198,7 @@ paths:
               newPlant:
                 type: object
                 $ref: '#definitions/myPlant'
-                properties: 
-                  image:
-                    type: string
-                    format: base64
-                  nickname: 
-                    type: string
-                  scientific_name: 
-                    type: string
-                  water_cycle:
-                    type: string
-                  fertilizer_cycle:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: date
-                  updatedAt:
-                    type: string
-                    format: date
+                
         400:
           description: add myplant fail
           schema:
@@ -244,6 +231,7 @@ paths:
             email:
               type: string
               format: email
+              
       responses:
         204:
           description: delete success
@@ -273,16 +261,16 @@ paths:
       produces:
       - application/json
       parameters:
-      - in: query
-        name: plantId
-        type: string
-        required: true
       - in: body
         name: body
         description: edit myplant data
         schema:
           type: object
+          required:
+            - plantId
           properties:
+            plantId:
+              type: string
             water_cycle:
               type: string
             fertilizer_cycle:
@@ -596,6 +584,7 @@ definitions:
     - scientific_name
     - water_cycle
     - fertilizer_cycle
+    - light
     properties: 
       image:
         type: string
@@ -607,6 +596,8 @@ definitions:
       water_cycle:
         type: string
       fertilizer_cycle:
+        type: string
+      light:
         type: string
       createdAt:
         type: string
@@ -653,6 +644,9 @@ definitions:
 
   infoPlant:
     type: object
+    required:
+      - image
+      - scientific_name
     properties:
       image:
         type: string

@@ -6,6 +6,7 @@ export type MyPlant = {
     scientific_name: string;
     water_cycle: string;
     fertilizer_cycle: string;
+    light: string;
 }
 export const myPlantSchema = new Schema(
     {
@@ -28,6 +29,10 @@ export const myPlantSchema = new Schema(
         fertilizer_cycle:{
             type: String,
             required: [true, 'fertilizer cycle is required!'],
+        },
+        light: {
+            type: String,
+            required: [true, 'light is required!'],
         },
     },
     {timestamps: true,}
