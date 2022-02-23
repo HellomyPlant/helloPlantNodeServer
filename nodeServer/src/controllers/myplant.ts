@@ -9,7 +9,8 @@ export const addMyPlant = async (req:Request, res: Response) => {
             water_cycle: req.body.water_cycle,
             fertilizer_cycle: req.body.fertilizer_cycle,
             nickname: req.body.nickname,
-            image: req.body.image
+            image: req.body.image,
+            light: req.body.light
         });
         myPlant.save();
         const user = await UserModel.findOneAndUpdate(
@@ -80,7 +81,8 @@ export const myPlantList = async (req: Request, res: Response) => {
              water_cycle : "",
              fertilizer_cycle : "",
              nickname: "",
-             image : ""
+             image : "",
+             light: "",
          }
          if(!user) {
              return res.status(400).json(
@@ -95,6 +97,7 @@ export const myPlantList = async (req: Request, res: Response) => {
                  plantData.fertilizer_cycle = myPlant.fertilizer_cycle;
                  plantData.nickname = myPlant.nickname;
                  plantData.image = myPlant.image;
+                 plantData.light = myPlant.light;
                  console.log( `plantData : ${plantData}`);
                  plantList.push({myPlant});
              }
