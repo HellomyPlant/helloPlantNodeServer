@@ -231,7 +231,7 @@ paths:
             email:
               type: string
               format: email
-              
+
       responses:
         204:
           description: delete success
@@ -397,7 +397,7 @@ paths:
               message : 
                 type: string
                 example: "plant data added!"
-              infoPlant:
+              plant:
                 type: object
                 $ref: '#definitions/plant'
         
@@ -427,7 +427,7 @@ paths:
       summary: edit infoplant
       operationId: editInfoPlant
       description: |
-        you can edit infoplant with not complete data or add plant with complete data
+        you can edit infoplant with not complete data or delete infoplant and add plant with complete data
       produces:
       - application/json
       parameters:
@@ -486,7 +486,7 @@ paths:
               message : 
                 type: string
                 example: "plant data added and infoPlant deleted!"
-              infoPlant:
+              plant:
                 type: object
                 $ref: '#definitions/plant'
         400:
@@ -543,6 +543,33 @@ paths:
             properties:
               errormessage: 
                 type: string
+
+  /plant:
+    get:
+      tags:
+      - plant
+      summary: get plant data
+      operationId: searchPlant
+      description: |
+        you can search plant data with scientific_name
+        this replaces "농사로 api"
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: scientific_name
+        type: string
+        required: true
+
+      responses:
+        200:
+          description: plant data with scientific_name
+          schema:
+            type: object
+            properties: 
+              plant: 
+                type: object
+                $ref: '#definitions/plant'
 
 definitions:
   User:

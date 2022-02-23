@@ -1,7 +1,6 @@
 import express from "express";
 import * as infoPlantController from '../../controllers/infoplant'
 import {authJwt} from "../../middlewares/auth";
-import {infoPlantList} from "../../controllers/infoplant";
 const router = express.Router();
 
 router.post('/',authJwt, infoPlantController.addInfoPlant);
