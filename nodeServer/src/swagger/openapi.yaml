@@ -506,6 +506,46 @@ paths:
               errormessage:
                 type: string
 
+    delete:
+      tags:
+        - infoPlant
+      summary: delete infoplant
+      operationId: deleteInfoPlant
+      description:
+        You can delete infoplant with plantId
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: deleteInfoPlant
+          description: delete infoplant data
+          schema:
+            type: object
+            required:
+              - scientific_name
+            properties:
+              scientific_name:
+                type: string
+
+      responses:
+        204:
+          description: delete success
+        400:
+          description: no infoplant to delete
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "no infoplant"
+        403:
+          description: delete infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+
   /infoplant/list:
     get:
       tags:

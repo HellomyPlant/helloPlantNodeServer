@@ -91,71 +91,70 @@ export const editInfoPlant = async (req:Request, res: Response) => {
                 message: 'no infoPlant'
             });
         }
+        
+        let necessary = infoPlant.necessary;
+        const not_necessary: string[] = [];
+        if(req.body.family_name!=undefined) {
+            infoPlant.family_name = req.body.family_name;
+            not_necessary.push("family_name");
+        }
+        if(req.body.water_cycle !== undefined) {
+            infoPlant.water_cycle = req.body.water_cycle;
+            not_necessary.push("water_cycle");
+        }
+        if(req.body.height !== undefined) {
+            infoPlant.height = req.body.height;
+            not_necessary.push("height");
+        }
+        if(req.body.place !== undefined) {
+            infoPlant.place = req.body.place;
+            not_necessary.push("place");
+        }
+        if(req.body.smell !== undefined) {
+            infoPlant.smell = req.body.smell;
+            not_necessary.push("smell");
+        }
+        if(req.body.growth_speed !== undefined) {
+            infoPlant.growth_speed = req.body.growth_speed;
+            not_necessary.push("growth_speed");
+        }
+        if(req.body.proper_temperature !== undefined) {
+            infoPlant.proper_temperature = req.body.proper_temperature;
+            not_necessary.push("proper_temperature");
+        }
+        if(req.body.pest !== undefined) {
+            infoPlant.pest = req.body.pest;
+            not_necessary.push("pest");
+        }
+        if(req.body.manage_level !== undefined) {
+            infoPlant.manage_level = req.body.manage_level;
+            not_necessary.push("manage_level");
+        }
+        if(req.body.light !== undefined) {
+            infoPlant.light = req.body.light;
+            not_necessary.push("light");
+        }
+        const filtered = necessary.filter(x => !not_necessary.includes(x));
+        infoPlant.necessary = filtered;
+        if(filtered.length===0){
+            const newPlant = await new plantModel(infoPlant);
+            await newPlant.save();
+            await infoPlantModel.findOneAndDelete({scientific_name:req.body.scientific_name});
+            return res.status(201).json({
+                message: "plant data added and infoPlant deleted!",
+                plant: newPlant
+            });
+        }
         else{
-            let necessary = infoPlant.necessary;
-            const not_necessary: string[] = [];
-            if(req.body.family_name!=undefined) {
-                infoPlant.family_name = req.body.family_name;
-                not_necessary.push("family_name");
-            }
-            if(req.body.water_cycle !== undefined) {
-                infoPlant.water_cycle = req.body.water_cycle;
-                not_necessary.push("water_cycle");
-            }
-            if(req.body.height !== undefined) {
-                infoPlant.height = req.body.height;
-                not_necessary.push("height");
-            }
-            if(req.body.place !== undefined) {
-                infoPlant.place = req.body.place;
-                not_necessary.push("place");
-            }
-            if(req.body.smell !== undefined) {
-                infoPlant.smell = req.body.smell;
-                not_necessary.push("smell");
-            }
-            if(req.body.growth_speed !== undefined) {
-                infoPlant.growth_speed = req.body.growth_speed;
-                not_necessary.push("growth_speed");
-            }
-            if(req.body.proper_temperature !== undefined) {
-                infoPlant.proper_temperature = req.body.proper_temperature;
-                not_necessary.push("proper_temperature");
-            }
-            if(req.body.pest !== undefined) {
-                infoPlant.pest = req.body.pest;
-                not_necessary.push("pest");
-            }
-            if(req.body.manage_level !== undefined) {
-                infoPlant.manage_level = req.body.manage_level;
-                not_necessary.push("manage_level");
-            }
-            if(req.body.light !== undefined) {
-                infoPlant.light = req.body.light;
-                not_necessary.push("light");
-            }
-            const filtered = necessary.filter(x => !not_necessary.includes(x));
-            infoPlant.necessary = filtered;
-            if(filtered.length===0){
-                const newPlant = await new plantModel(infoPlant);
-                await newPlant.save();
-                await infoPlantModel.findOneAndDelete({scientific_name:req.body.scientific_name});
-                return res.status(201).json({
-                    message: "plant data added and infoPlant deleted!",
-                    plant: newPlant
-                });
-            }
-            else{
-                const editedPlant = await infoPlantModel.findOneAndUpdate(
-                    {scientific_name: req.body.scientific_name},
-                    infoPlant,
-                    {new: true}
-                );
-                return res.status(200).json({
-                    message: "info plant data edited",
-                    infoPlant: editedPlant,
-                });
-            }
+            const editedPlant = await infoPlantModel.findOneAndUpdate(
+                {scientific_name: req.body.scientific_name},
+                infoPlant,
+                {new: true}
+            );
+            return res.status(200).json({
+                message: "info plant data edited",
+                infoPlant: editedPlant,
+            });
         }
     }
     catch (e) {
@@ -163,7 +162,21 @@ export const editInfoPlant = async (req:Request, res: Response) => {
         return res.status(403).json({errormessage : `edit info plant fail with error : ${e}`});
     }
 }
-
+export const deleteInfoPlant = async (req:Request, res: Response) => {
+    try{
+        let infoPlant = await infoPlantModel.findOneAndDelete({scientific_name: req.body.scientific_name});
+        if(!infoPlant) {
+            return res.status(400).json({
+                message: 'no infoPlant'
+            });
+        }
+        return res.status(204);
+    }
+    catch (e) {
+        console.log(`delete infoplant fail with error ${e}`);
+        return res.status(403).json({errormessage : `delete info plant fail with error : ${e}`});
+    }
+}
 export const infoPlantList = async (req: Request, res: Response) => {
     try{
         const page = parseInt(<string>req.query.page);
@@ -171,7 +184,7 @@ export const infoPlantList = async (req: Request, res: Response) => {
         const infoPlantList = [];
         let maxPage = 0;
         if(infoPlant){
-            maxPage = (infoPlant.length-1)/9+1;
+            maxPage = Math.floor((infoPlant.length-1)/9+1);
         }
         for(let i = 0; i<9; i++){
             if(infoPlant[i+9*page-9]){
