@@ -7,7 +7,7 @@ import plantRoutes from './plant/plant';
 const router = express.Router();
 
 router.get('/test', (req,res)=>{
-   res.sendStatus(200);
+   res.sendStatus(201);
 });
 
 router.use('/user', userRoutes);
