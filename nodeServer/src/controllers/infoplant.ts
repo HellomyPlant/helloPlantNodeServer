@@ -169,6 +169,10 @@ export const infoPlantList = async (req: Request, res: Response) => {
         const page = parseInt(<string>req.query.page);
         const infoPlant = await infoPlantModel.find({}, null, {sort:{"updated_at":-1}});
         const infoPlantList = [];
+        let maxPage = 0;
+        if(infoPlant){
+            maxPage = (infoPlant.length-1)/9+1;
+        }
         for(let i = 0; i<9; i++){
             if(infoPlant[i+9*page-9]){
                 infoPlantList.push(infoPlant[i+9*page-9]);
@@ -179,7 +183,9 @@ export const infoPlantList = async (req: Request, res: Response) => {
         }
         return res.status(201).json({
             message: `infoplant list for page : ${page}`,
-            infoPlantList : infoPlantList
+            infoPlantList : infoPlantList,
+            page : page,
+            maxPage : maxPage
         });
     }
     catch(e) {
