@@ -83,7 +83,7 @@ export const myPlantList = async (req: Request, res: Response) => {
              nickname: "",
              image : "",
              light: "",
-         }
+         };
          if(!user) {
              return res.status(400).json(
                  {message : "no user"}
@@ -99,12 +99,12 @@ export const myPlantList = async (req: Request, res: Response) => {
                  plantData.image = myPlant.image;
                  plantData.light = myPlant.light;
                  console.log( `plantData : ${plantData}`);
-                 plantList.push({myPlant});
+                 plantList.push(myPlant);
              }
          }
          console.log(`my plant list : ${plantList}`);
          return res.status(200).json(
-             {plants: plantList}
+             {myPlantList: plantList}
          )
     }
     catch (e) {
