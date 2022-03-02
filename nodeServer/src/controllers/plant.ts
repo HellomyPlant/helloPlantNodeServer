@@ -4,7 +4,11 @@ import {plantModel} from "../db";
 
 export const searchPlant = async (req:Request, res: Response) => {
     try{
-        const plant = await plantModel.findOne({scientific_name : req.query.scientific_name});
+        var scientific_name = req.query.scientific_name as string;
+        var re = new RegExp(scientific_name,"i")
+    
+        console.log(scientific_name);
+        const plant = await plantModel.findOne({scientific_name : {$regex : scientific_name}});
         if(!plant){
             return res.status(400).json({
                 message: `There is no plant with the scientific name ${req.query.scientific_name}`
