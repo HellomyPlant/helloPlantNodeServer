@@ -11,13 +11,17 @@ export const addInfoPlant = async (req:Request, res: Response) => {
                 plant: plant
             })
         }
-        const default_necessary: string[] = ["family_name","water_cycle", "height", "place", "smell", "growth_speed","proper_temperature", "pest", "manage_level", "light"];
+        const default_necessary: string[] = ["family_name", "korean_name", "water_cycle", "height", "place", "smell", "growth_speed","proper_temperature", "pest", "manage_level", "light"];
         const not_necessary: string[] = [];
         let data: any = {}
         data.scientific_name = req.body.scientific_name;
         if(req.body.family_name!=undefined) {
             data.family_name = req.body.family_name;
             not_necessary.push("family_name");
+        }
+        if(req.body.korean_name!=undefined) {
+            data.korean_name = req.body.korean_name;
+            not_necessary.push("korean_name");
         }
         if(req.body.water_cycle !== undefined) {
             data.water_cycle = req.body.water_cycle;
@@ -91,12 +95,16 @@ export const editInfoPlant = async (req:Request, res: Response) => {
                 message: 'no infoPlant'
             });
         }
-        
+
         let necessary = infoPlant.necessary;
         const not_necessary: string[] = [];
         if(req.body.family_name!=undefined) {
             infoPlant.family_name = req.body.family_name;
             not_necessary.push("family_name");
+        }
+        if(req.body.korean_name!=undefined) {
+            infoPlant.korean_name = req.body.korean_name;
+            not_necessary.push("korean_name");
         }
         if(req.body.water_cycle !== undefined) {
             infoPlant.water_cycle = req.body.water_cycle;

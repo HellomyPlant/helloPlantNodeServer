@@ -5,6 +5,7 @@ export type InfoPlant = {
     image: string;
     scientific_name: string;
     family_name: string;
+    korean_name: string;
     water_cycle: string;
     height: string;
     place: string;
@@ -28,6 +29,9 @@ export const infoPlantSchema = new Schema(
             required: [true, 'scientific name is required!']
         },
         family_name: {
+            type: String,
+        },
+        korean_name: {
             type: String,
         },
         water_cycle: {

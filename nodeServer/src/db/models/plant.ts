@@ -4,6 +4,7 @@ import mongooseUniqueValidator from 'mongoose-unique-validator';
 export type Plant = {
     scientific_name: string;
     family_name: string;
+    korean_name: string;
     water_cycle: string;
     height: string;
     place: string;
@@ -22,6 +23,9 @@ export const plantSchema = new Schema(
             unique: true,
         },
         family_name: {
+            type: String,
+        },
+        korean_name: {
             type: String,
         },
         water_cycle: {
