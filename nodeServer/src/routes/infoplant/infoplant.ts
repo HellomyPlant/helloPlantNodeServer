@@ -7,4 +7,5 @@ router.post('/',authJwt, infoPlantController.addInfoPlant);
 router.put('/',authJwt, infoPlantController.editInfoPlant);
 router.delete('/',authJwt, infoPlantController.deleteInfoPlant);
 router.get('/list',authJwt, infoPlantController.infoPlantList);
+router.put('/mail', authJwt, infoPlantController.addMailToInfoPlant);
 export default router;

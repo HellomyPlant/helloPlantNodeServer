@@ -3,6 +3,7 @@ import mongooseUniqueValidator from 'mongoose-unique-validator';
 
 export type InfoPlant = {
     image: string;
+    email: string[];
     scientific_name: string;
     family_name: string;
     korean_name: string;
@@ -15,10 +16,14 @@ export type InfoPlant = {
     pest: string;
     manage_level: string;
     light: string;
-    necessary: string[]
+    necessary: string[];
 }
 export const infoPlantSchema = new Schema(
     {
+        email: {
+            type: [String],
+            required: [true, 'email is required!']
+        },
         image: {
             type: String,
             required: [true, 'image is required!']

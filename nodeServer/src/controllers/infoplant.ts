@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import {infoPlantModel} from "../db";
 import {plantModel} from "../db";
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const addInfoPlant = async (req:Request, res: Response) => {
     try{
@@ -11,9 +15,17 @@ export const addInfoPlant = async (req:Request, res: Response) => {
                 plant: plant
             })
         }
+        const infoplant = await infoPlantModel.findOne({scientific_name: req.body.scientific_name});
+        
         const default_necessary: string[] = ["family_name", "korean_name", "water_cycle", "height", "place", "smell", "growth_speed","proper_temperature", "pest", "manage_level", "light"];
         const not_necessary: string[] = [];
         let data: any = {}
+        if(!req.body.email){
+            return res.status(403).json({
+                errormessage : `email has to be sended`
+            })
+        }
+        data.email = [req.body.email];
         data.scientific_name = req.body.scientific_name;
         if(req.body.family_name!=undefined) {
             data.family_name = req.body.family_name;
@@ -147,6 +159,9 @@ export const editInfoPlant = async (req:Request, res: Response) => {
         if(filtered.length===0){
             const newPlant = await new plantModel(infoPlant);
             await newPlant.save();
+            for(const mail of infoPlant.email){
+                sendMail(mail,infoPlant.scientific_name).catch(console.error);
+            }
             await infoPlantModel.findOneAndDelete({scientific_name:req.body.scientific_name});
             return res.status(201).json({
                 message: "plant data added and infoPlant deleted!",
@@ -168,6 +183,33 @@ export const editInfoPlant = async (req:Request, res: Response) => {
     catch (e) {
         console.log(`edit info plant fail with error ${e}`);
         return res.status(403).json({errormessage : `edit info plant fail with error : ${e}`});
+    }
+}
+const EMAIL = "dmsskgus@naver.com";
+const EMAIL_PW = "skgus1220^^";
+const sendMail = async (userMail : string,plantName: string) => {
+    try{
+        const plant = await plantModel.findOne({scientific_name : plantName});
+        let transporter = nodemailer.createTransport({
+            service: 'Naver',
+            host:'smtp.naver.com',
+            port: 587,
+            auth: {
+                user: EMAIL,
+                pass: EMAIL_PW,
+            },
+        });
+        let info = await transporter.sendMail({
+            from : EMAIL,
+            to: userMail,
+            subject : 'HelloMyPlant에 식물 정보가 완성되었습니다',
+            text: 
+            `안녕하세요 HelloMyPlant앱 개발팀 입니다.\n요청하신 식물 '${plantName}'의 정보가 완성되었습니다 앱에서 확인해 주세요\n ${plant}`
+        }); 
+        console.log(`mail sended with ${info}`);
+    }
+    catch(e) {
+        console.log(`send mail error with ${e}`);
     }
 }
 export const deleteInfoPlant = async (req:Request, res: Response) => {
@@ -215,4 +257,21 @@ export const infoPlantList = async (req: Request, res: Response) => {
         })
     }
 }
-
+export const addMailToInfoPlant = async (req: Request, res: Response) => {
+    try{
+        const infoPlant = await infoPlantModel.findOneAndUpdate(
+            {scientific_name:req.body.scientific_name},
+            { $addToSet: { email: req.body.email  } },
+            {new: true}
+        );
+        return res.status(200).json({
+            message: `mail added success!`,
+            infoPlant : infoPlant
+        });
+    }
+    catch(e) {
+        return res.status(403).json({
+            errormessage : `mail adding fail with error : ${e}`
+        });
+    }
+}
