@@ -339,6 +339,13 @@
   "resolved" "https://registry.npmjs.org/@types/node/-/node-17.0.5.tgz"
   "version" "17.0.5"
 
+"@types/nodemailer@^6.4.4":
+  "integrity" "sha512-Ksw4t7iliXeYGvIQcSIgWQ5BLuC/mljIEbjf615svhZL10PE9t+ei8O9gDaD3FPCasUJn9KTLwz2JFJyiiyuqw=="
+  "resolved" "https://registry.npmjs.org/@types/nodemailer/-/nodemailer-6.4.4.tgz"
+  "version" "6.4.4"
+  dependencies:
+    "@types/node" "*"
+
 "@types/passport-jwt@^3.0.6":
   "integrity" "sha512-cmAAMIRTaEwpqxlrZyiEY9kdibk94gP5KTF8AT1Ra4rWNZYHNMreqhKUEeC5WJtuN5SJZjPQmV+XO2P5PlnvNQ=="
   "resolved" "https://registry.npmjs.org/@types/passport-jwt/-/passport-jwt-3.0.6.tgz"
@@ -1457,7 +1464,6 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
-<<<<<<< Updated upstream
 "fsevents@~2.3.2":
   "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
   "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
@@ -1471,8 +1477,6 @@
     "readable-stream" "1.1.x"
     "xregexp" "2.0.0"
 
-=======
->>>>>>> Stashed changes
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -2356,6 +2360,11 @@
   "version" "2.6.6"
   dependencies:
     "whatwg-url" "^5.0.0"
+
+"nodemailer@^6.7.2":
+  "integrity" "sha512-Dz7zVwlef4k5R71fdmxwR8Q39fiboGbu3xgswkzGwczUfjp873rVxt1O46+Fh0j1ORnAC6L9+heI8uUpO6DT7Q=="
+  "resolved" "https://registry.npmjs.org/nodemailer/-/nodemailer-6.7.2.tgz"
+  "version" "6.7.2"
 
 "nodemon@^2.0.15":
   "integrity" "sha512-gdHMNx47Gw7b3kWxJV64NI+Q5nfl0y5DgDbiVtShiwa7Z0IZ07Ll4RLFo6AjrhzMtoEZn5PDE3/c2AbVsiCkpA=="
