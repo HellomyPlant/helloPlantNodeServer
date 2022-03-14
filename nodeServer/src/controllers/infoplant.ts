@@ -16,7 +16,7 @@ export const addInfoPlant = async (req:Request, res: Response) => {
             })
         }
         const infoplant = await infoPlantModel.findOne({scientific_name: req.body.scientific_name});
-        
+
         const default_necessary: string[] = ["family_name", "korean_name", "water_cycle", "height", "place", "smell", "growth_speed","proper_temperature", "pest", "manage_level", "light"];
         const not_necessary: string[] = [];
         let data: any = {}
@@ -186,7 +186,7 @@ export const editInfoPlant = async (req:Request, res: Response) => {
     }
 }
 const EMAIL = "dmsskgus@naver.com";
-const EMAIL_PW = "skgus1220^^";
+const EMAIL_PW = "1220skgus^^";
 const sendMail = async (userMail : string,plantName: string) => {
     try{
         const plant = await plantModel.findOne({scientific_name : plantName});
@@ -203,9 +203,9 @@ const sendMail = async (userMail : string,plantName: string) => {
             from : EMAIL,
             to: userMail,
             subject : 'HelloMyPlant에 식물 정보가 완성되었습니다',
-            text: 
+            text:
             `안녕하세요 HelloMyPlant앱 개발팀 입니다.\n요청하신 식물 '${plantName}'의 정보가 완성되었습니다 앱에서 확인해 주세요\n ${plant}`
-        }); 
+        });
         console.log(`mail sended with ${info}`);
     }
     catch(e) {
