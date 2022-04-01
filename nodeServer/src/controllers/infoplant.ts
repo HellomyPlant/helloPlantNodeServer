@@ -185,8 +185,8 @@ export const editInfoPlant = async (req:Request, res: Response) => {
         return res.status(403).json({errormessage : `edit info plant fail with error : ${e}`});
     }
 }
-const EMAIL = "dmsskgus@naver.com";
-const EMAIL_PW = "1220skgus^^";
+const EMAIL = process.env.NODEMAILER_USER;
+const EMAIL_PW = process.env.NODEMAILER_PASSWORD;
 const sendMail = async (userMail : string,plantName: string) => {
     try{
         const plant = await plantModel.findOne({scientific_name : plantName});

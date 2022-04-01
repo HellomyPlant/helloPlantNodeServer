@@ -5,7 +5,9 @@ import {
 } from 'passport-jwt';
 import passportLocal from 'passport-local';
 import {UserModel} from "../db";
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 const localOpts = {
     usernameField: 'email',
@@ -13,7 +15,7 @@ const localOpts = {
 
 const jwtOpts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: "OVWdXG1Sz7",
+    secretOrKey: process.env.JWT_SECRET,
 };
 
 const LocalStrategy = passportLocal.Strategy;
@@ -38,7 +40,6 @@ const jwtStrategy = new JWTStrategy(jwtOpts, async (payload,done) => {
     console.log(payload);
     try{
         const user = await UserModel.findOne({email : payload.email});
-        // console.log(user?._id);
         if(!user) {
             return done(null, false);
         }
