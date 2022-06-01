@@ -31,7 +31,7 @@ export const userSchema = new Schema(
         email: {
             type: String,
             required: [true, 'Email is required!'],
-            unique: true,
+            // unique: true,
             trim: true,
             validate: {
                 validator(email: string) {
@@ -43,7 +43,6 @@ export const userSchema = new Schema(
         nickname: {
             type: String,
             required: true,
-            // unique: true,
             trim: true,
         },
         password: {
@@ -76,6 +75,7 @@ userSchema.plugin(mongooseUniqueValidator, {
 });
 
 userSchema.pre('save', function (next) {
+    console.log(`save method called!`);
     if (this.isModified('password')) {
         this.password = this._hashPassword(this.password);
     }
@@ -91,8 +91,6 @@ userSchema.methods.comparePassword = function (password: string) {
     return compareSync(password, this.password);
 };
 userSchema.methods.createToken = function () {
-    // todo : secretOrPrivateKey has to be in .env file
-    // process.env.JWT_SECRET
     return jwt.sign(
         {
             _id: this._id,

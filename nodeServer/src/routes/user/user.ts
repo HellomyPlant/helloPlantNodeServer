@@ -1,7 +1,5 @@
 import express from 'express';
 import * as userControllers from '../../controllers/user';
-import { signupValidation } from '../../middlewares/validation';
-import { validate } from 'express-validation';
 import { authLocal, authJwt } from '../../middlewares/auth';
 const router = express.Router();
 router.post('/signup', userControllers.signUp);

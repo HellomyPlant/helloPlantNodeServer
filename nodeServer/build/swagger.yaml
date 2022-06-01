@@ -1,0 +1,705 @@
+swagger: '2.0'
+info:
+  description: This is HelloPlant api document!
+  version: 1.0.0
+  title: HelloPlant api
+  contact:
+    email: qwerq123456@snu.ac.kr
+basePath: '/18.116.203.236:1234'
+schemes:
+  - http
+tags:
+  - name: user
+    description: Methods about user model
+  - name: myPlant
+    description: Methods about myplant model
+  - name: test
+    description: Methods for developer's test
+  - name: plant
+    description: Methods about plant model
+  - name: infoPlant
+    description: Methods about infoPlant model
+paths:
+  /test:
+    get:
+      tags:
+        - test
+      summary: test for url
+      operationId: url test
+      description: |
+        you can test url with this method
+      responses:
+        '200':
+          description: it just sends 200
+  /user/signup:
+    post:
+      tags:
+        - user
+      summary: user signup
+      operationId: UserSignup
+      description: |
+        you can signup with email, password, nickname
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: signup data
+          schema:
+            type: object
+            required:
+              - email
+              - password
+              - nickname
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+              nickname:
+                type: string
+      responses:
+        '201':
+          description: signup success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'signup success with email: ${user.email}'
+        '409':
+          description: signup fail with vallidation error
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+                example: 'signup error with ${errormessage}'
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: user login
+      operationId: UserLogin
+      description: |
+        you can login in with email, password
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: login data
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+      responses:
+        '200':
+          description: login success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: login success
+              accessToken:
+                type: string
+                format: accessToken
+        '400':
+          description: bad request because no email or password
+        '401':
+          description: login fail because email and password not mached
+  /user/test:
+    get:
+      tags:
+        - test
+      summary: test jwt token available
+      operationId: testJWT
+      description: |
+        By passing jwt in header with bearer token option, you can test jwt available
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: token available
+        '401':
+          description: token not available
+  /myplant:
+    post:
+      tags:
+        - myPlant
+      summary: add myplant
+      operationId: appMyPlant
+      description: You can add myplant with myplant data
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: email
+          type: string
+          format: email
+          required: true
+        - in: body
+          name: body
+          description: add myplant data
+          schema:
+            type: object
+            required:
+              - scientific_name
+              - water_cycle
+              - fertilizer_cycle
+              - nickname
+              - image
+              - light
+            properties:
+              scientific_name:
+                type: string
+              water_cycle:
+                type: string
+              fertilizer_cycle:
+                type: string
+              nickname:
+                type: string
+              image:
+                type: string
+                format: base64
+              light:
+                type: string
+      responses:
+        '201':
+          description: add myplant success
+          schema:
+            type: object
+            properties:
+              newPlant:
+                type: object
+                $ref: '#definitions/myPlant'
+        '400':
+          description: add myplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+    delete:
+      tags:
+        - myPlant
+      summary: delete myplant
+      operationId: deleteMyPlant
+      description: You can delete myplant with plantId
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: deleteMyPlant
+          description: delete myplant data
+          schema:
+            type: object
+            required:
+              - plantId
+              - email
+            properties:
+              plantId:
+                type: string
+              email:
+                type: string
+                format: email
+      responses:
+        '204':
+          description: delete success
+        '400':
+          description: no plant to delete
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: no plant
+        '403':
+          description: delete myplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+    put:
+      tags:
+        - myPlant
+      summary: edit myplant
+      operationId: editMyPlant
+      description: You can edit myplant with plant data
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: edit myplant data
+          schema:
+            type: object
+            required:
+              - plantId
+            properties:
+              plantId:
+                type: string
+              water_cycle:
+                type: string
+              fertilizer_cycle:
+                type: string
+              nickname:
+                type: string
+      responses:
+        '204':
+          description: success
+        '400':
+          description: no plant to delete
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '403':
+          description: delete myplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+  /myplant/list:
+    get:
+      tags:
+        - myPlant
+      summary: get myplant list with user email
+      operationId: myPlantList
+      description: |
+        you can get myplant list with user email
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: email
+          type: string
+          required: true
+          format: email
+      responses:
+        '200':
+          description: get list success
+          schema:
+            type: object
+            properties:
+              plants:
+                type: array
+                items:
+                  $ref: '#definitions/myPlant'
+        '400':
+          description: bad request because can't find user with email
+        '403':
+          description: get list fail
+  /infoplant:
+    post:
+      tags:
+        - infoPlant
+      summary: add infoplant
+      operationId: addInfoPlant
+      description: |
+        you can add infoplant with not complete data or add plant with complete data
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: addInfoPlant
+          description: add infoplant data
+          schema:
+            type: object
+            required:
+              - image
+              - scientific_name
+            properties:
+              image:
+                type: string
+                format: base64
+              scientific_name:
+                type: string
+              family_name:
+                type: string
+              water_cycle:
+                type: string
+              height:
+                type: string
+              place:
+                type: string
+              smell:
+                type: string
+              growth_speed:
+                type: string
+              proper_temperature:
+                type: string
+              pest:
+                type: string
+              manage_level:
+                type: string
+              light:
+                type: string
+      responses:
+        '200':
+          description: add infoplant success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: info plant data added!
+              infoPlant:
+                type: object
+                $ref: '#definitions/infoPlant'
+        '201':
+          description: add plant success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: plant data added!
+              plant:
+                type: object
+                $ref: '#definitions/plant'
+        '403':
+          description: add infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+        '405':
+          description: already plant data in database
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: already plant data exists
+              plant:
+                type: object
+                $ref: '#definitions/plant'
+    put:
+      tags:
+        - infoPlant
+      summary: edit infoplant
+      operationId: editInfoPlant
+      description: |
+        you can edit infoplant with not complete data or delete infoplant and add plant with complete data
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: editInfoPlant
+          description: edit infoplant data
+          schema:
+            type: object
+            required:
+              - scientific_name
+            properties:
+              image:
+                type: string
+                format: base64
+              scientific_name:
+                type: string
+              family_name:
+                type: string
+              water_cycle:
+                type: string
+              height:
+                type: string
+              place:
+                type: string
+              smell:
+                type: string
+              growth_speed:
+                type: string
+              proper_temperature:
+                type: string
+              pest:
+                type: string
+              manage_level:
+                type: string
+              light:
+                type: string
+      responses:
+        '200':
+          description: edit infoplant success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: info plant data edited!
+              infoPlant:
+                type: object
+                $ref: '#definitions/infoPlant'
+        '201':
+          description: add plant success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: plant data added and infoPlant deleted!
+              plant:
+                type: object
+                $ref: '#definitions/plant'
+        '400':
+          description: no infoplant data in database
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: no infoplant
+        '403':
+          description: add infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+    delete:
+      tags:
+        - infoPlant
+      summary: delete infoplant
+      operationId: deleteInfoPlant
+      description: You can delete infoplant with plantId
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: deleteInfoPlant
+          description: delete infoplant data
+          schema:
+            type: object
+            required:
+              - scientific_name
+            properties:
+              scientific_name:
+                type: string
+      responses:
+        '204':
+          description: delete success
+        '400':
+          description: no infoplant to delete
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: no infoplant
+        '403':
+          description: delete infoplant fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+  /infoplant/list:
+    get:
+      tags:
+        - infoPlant
+      summary: get infoplant list
+      operationId: infoPlantlist
+      description: |
+        you can get infoplant list that sorted with created date
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          type: string
+          required: true
+      responses:
+        '201':
+          description: infoplant list that sorted with created date
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'infoplant list for page : ${page}'
+              infoPlantList:
+                type: array
+                items:
+                  $ref: '#definitions/infoPlant'
+              page:
+                type: string
+              maxPage:
+                type: string
+        '403':
+          description: get infoplantlist fail
+          schema:
+            type: object
+            properties:
+              errormessage:
+                type: string
+  /plant:
+    get:
+      tags:
+        - plant
+      summary: get plant data
+      operationId: searchPlant
+      description: |
+        you can search plant data with scientific_name
+        this replaces "농사로 api"
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: scientific_name
+          type: string
+          required: true
+      responses:
+        '200':
+          description: plant data with scientific_name
+          schema:
+            type: object
+            properties:
+              plant:
+                type: object
+                $ref: '#definitions/plant'
+definitions:
+  User:
+    type: object
+    required:
+      - id
+      - email
+      - password
+      - nickname
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+      nickname:
+        type: string
+        example: testnickname
+      myPlantList:
+        type: array
+        items:
+          $ref: '#definitions/myPlant'
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+    description: user model
+  myPlant:
+    type: object
+    required:
+      - image
+      - nickname
+      - scientific_name
+      - water_cycle
+      - fertilizer_cycle
+      - light
+    properties:
+      image:
+        type: string
+        format: base64
+      nickname:
+        type: string
+      scientific_name:
+        type: string
+      water_cycle:
+        type: string
+      fertilizer_cycle:
+        type: string
+      light:
+        type: string
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+    description: my plant for user
+  plant:
+    type: object
+    properties:
+      scientific_name:
+        type: string
+      family_name:
+        type: string
+      water_cycle:
+        type: string
+      height:
+        type: string
+      place:
+        type: string
+      smell:
+        type: string
+      growth_speed:
+        type: string
+      proper_temperature:
+        type: string
+      pest:
+        type: string
+      manage_level:
+        type: string
+      light:
+        type: string
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+    description: all plant infomations
+  infoPlant:
+    type: object
+    required:
+      - image
+      - scientific_name
+    properties:
+      image:
+        type: string
+        format: base64
+      scientific_name:
+        type: string
+      family_name:
+        type: string
+      water_cycle:
+        type: string
+      height:
+        type: string
+      place:
+        type: string
+      smell:
+        type: string
+      growth_speed:
+        type: string
+      proper_temperature:
+        type: string
+      pest:
+        type: string
+      manage_level:
+        type: string
+      light:
+        type: string
+      necessary:
+        type: array
+      createdAt:
+        type: string
+        format: date
+      updated_at:
+        type: string
+        format: date

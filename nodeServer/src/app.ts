@@ -25,7 +25,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 app.use(bodyParser.json({
-        limit: "50mb"
+    limit: "50mb"
 }));
 app.use(bodyParser.urlencoded({
     limit: "50mb",
@@ -44,10 +44,10 @@ app.use(passport.initialize());
 app.use('/', router);
 
 // todo : put port in .env
-app.listen('1234', () => {
+app.listen('5000', () => {
     console.log(`
   ################################################
-  🛡️  Server listening on port: 1234🛡️
+  🛡️  Server listening on port: 5000!
   ################################################
 `);
 });
