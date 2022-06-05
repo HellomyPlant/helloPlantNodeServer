@@ -9,13 +9,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 const localOpts = {
     usernameField: 'email',
 };
 
 const jwtOpts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET,
+    secretOrKey : JWT_SECRET
 };
 
 const LocalStrategy = passportLocal.Strategy;

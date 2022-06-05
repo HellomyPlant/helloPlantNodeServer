@@ -5,9 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import { UserModel } from '../db';
 
-const SECRET_KEY = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET as string;
 export const signUp = async (req: Request, res: Response) => {
-    const { email, password, nickname } = req.body;
     console.log(req.body);
     try {
         const user = new UserModel(req.body)
@@ -29,7 +28,7 @@ export const signUp = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
         {email:req.body.email},
-        "OVWdXG1Sz7",
+        JWT_SECRET,
         {expiresIn: "30d"});
     return res.status(200).json({message: 'login success', accessToken});
 };
