@@ -4,11 +4,15 @@ import myPlantRoutes from './myplant/myplant';
 import testPlantRoutes from './testplant/testplant';
 import infoPlantRoutes from './infoplant/infoplant';
 import plantRoutes from './plant/plant';
+
 const router = express.Router();
 
 router.get('/test', (req,res)=>{
    res.sendStatus(200);
 });
+router.get('/deploy-test', (req,res) => {
+    res.sendStatus(200);
+})
 
 router.use('/user', userRoutes);
 router.use('/myplant', myPlantRoutes);
