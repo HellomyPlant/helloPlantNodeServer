@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/test', (req,res)=>{
    res.sendStatus(200);
 });
-router.get('/deploy-test1', (req,res) => {
+router.get('/deploy-test2', (req,res) => {
     res.sendStatus(200);
 })
 
