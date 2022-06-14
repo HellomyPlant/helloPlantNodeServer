@@ -24,5 +24,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install --prefix ./nodeServer
-    - run: npm run dev --prefix ./nodeServer
+    - run: |
+        echo "PORT=$PORT" >> .env
+        echo "JWT_SECRET=$JWT_SECRET" >> .env
+        echo "NODEMAILER_USER=$NODEMAILER_USER" >> .env
+        echo "NODEMAILER_PASSWORD=$NODEMAILER_PASSWORD" >> .env
+        npm install --prefix ./nodeServer
+        npm run dev --prefix ./nodeServer
+    env :  
+      PORT: ${{ secrets.PORT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
+      NODEMAILER_PASSWORD: ${{ secrets.NODEMAILER_PASSWORD }}
