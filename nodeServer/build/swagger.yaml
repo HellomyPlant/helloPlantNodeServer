@@ -5,7 +5,7 @@ info:
   title: HelloPlant api
   contact:
     email: qwerq123456@snu.ac.kr
-basePath: '/18.116.203.236:1234'
+basePath: /3.12.148.142/
 schemes:
   - http
 tags:

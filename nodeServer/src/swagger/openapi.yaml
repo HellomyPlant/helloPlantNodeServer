@@ -7,7 +7,7 @@ info:
   # put the contact info for your development or API team
   contact:
     email: qwerq123456@snu.ac.kr
-basePath: /18.116.203.236:1234
+basePath: /3.12.148.142/
 schemes:
   - http
 
