@@ -24,6 +24,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cd nodeServer
-    - run: npm install
-    - run: npm dev
+    - run: npm install --prefix ./nodeServer
+    - run: npm dev --prefix ./nodeServer
