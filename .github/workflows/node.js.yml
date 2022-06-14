@@ -24,6 +24,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cd helloPlantNodeServer
+    - run: cd nodeServer
     - run: npm install
     - run: npm dev
