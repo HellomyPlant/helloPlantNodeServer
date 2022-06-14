@@ -19,7 +19,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 
 app.use(session({
-    // todo : put it in .env
     secret: 'secret',
     resave: false,
     saveUninitialized: true,
@@ -43,7 +42,6 @@ app.use(passport.initialize());
 
 app.use('/', router);
 
-// todo : put port in .env
 app.listen('5000', () => {
     console.log(`
   ################################################

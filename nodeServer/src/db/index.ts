@@ -2,11 +2,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
+const DB_URL = process.env.DB_URL as string;
 mongoose.connect(
-    "mongodb://my-username:my-root-password@mongo:27017"
-    // process.env.DB_URL as string,
-    // "mongodb+srv://qwerq123456:rudghks123@cluster0.nyhkg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    DB_URL
 );
 const db = mongoose.connection;
 
