@@ -25,4 +25,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install --prefix ./nodeServer
-    - run: npm dev --prefix ./nodeServer
+    - run: npm run dev --prefix ./nodeServer
